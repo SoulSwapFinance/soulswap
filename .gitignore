@@ -1,5 +1,6 @@
 abi/
 artifacts/
+bin
 cache/
 coverage/
 exports/
