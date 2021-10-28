@@ -614,14 +614,14 @@ abstract contract Ownable is Context {
 
 pragma solidity ^0.8.7;
 
-// aura is the neatest bound around. come in with some soul, and leave with some more! 
-// handles swapping to and from AURA -- our protocol reward token.
+// SoulBound is the neatest bound around. come in with some soul, and leave with some more! 
+// handles swapping to and from BOUND -- our protocol reward token.
 
-contract SoulBound is ERC20("SoulBound", "AURA"), Ownable, ReentrancyGuard {
+contract SoulBound is ERC20("SoulBound", "BOUND"), Ownable, ReentrancyGuard {
     IERC20 public soul;
     IERC20 public seance;
-    
     bool isInitialized; // stores whether contract has been initialized
+    event NewConstants(IERC20 _soul, IERC20 _seance);
 
     // the soul token contract
     function initialize(IERC20 _soul, IERC20 _seance) external onlyOwner {
@@ -648,42 +648,47 @@ contract SoulBound is ERC20("SoulBound", "AURA"), Ownable, ReentrancyGuard {
         return seanceTotal + soulTotal;
     }
 
-    function mintableAura(uint _seanceStakable) internal view returns (uint) {
-        uint soulAura; // initiates soul aura
+    function mintableBound(uint _seanceStakable) internal view returns (uint) {
+        uint soulBound; // initiates soul bound
 
         totalPayable() == 0 
-            ? soulAura = 1 // sets an aura power of 1
-            : soulAura = totalSupply() / totalPayable(); // sets weight for aura power
+            ? soulBound = 1 // sets an bound power of 1
+            : soulBound = totalSupply() / totalPayable(); // sets weight for bound power
 
-        return _seanceStakable * soulAura; // sets aura to mint
+        return _seanceStakable * soulBound; // sets bound to mint
     }
 
-    // locks soul, mints aura at aura rate
+    // locks soul, mints bound at bound rate
     function enter(uint seanceStakable) external nonReentrant {
         require(isInitialized, 'staking has not yet begun');
-        uint auraMintable = mintableAura(seanceStakable); // total aura to mine to sender
+        uint boundMintable = mintableBound(seanceStakable); // total bound to mine to sender
         
         seance.transferFrom(msg.sender, address(this), seanceStakable); // transfers seance from sender
-        _mint(msg.sender, auraMintable); // mints aura to sender
+        _mint(msg.sender, boundMintable); // mints bound to sender
     }
 
-    // leaves the soulAura. reclaims soul.
-    // unlocks soul rewards + staked seance | burns bounded aura
-    function leave(uint auraShare) external nonReentrant {
+    // leaves the bound. reclaims soul.
+    // unlocks soul rewards + staked seance | burns bound
+    function leave(uint boundShare) external nonReentrant {
 
         // exchange rates
-        uint soulRate = totalSoul() / totalSupply(); // soul per aura (exchange rate)
-        uint seanceRate = totalSeance() / totalSupply(); // seance per aura (exchange rate)
+        uint soulRate = totalSoul() / totalSupply(); // soul per bound (exchange rate)
+        uint seanceRate = totalSeance() / totalSupply(); // seance per bound (exchange rate)
 
         // payable component shares
-        uint soulShare = auraShare * soulRate; // exchanges aura for soul (at soul rate)
-        uint seanceShare = auraShare * seanceRate; // exchanges aura for seance (at soul rate)
+        uint soulShare = boundShare * soulRate; // exchanges bound for soul (at soul rate)
+        uint seanceShare = boundShare * seanceRate; // exchanges bound for seance (at soul rate)
 
-        _burn(msg.sender, auraShare);
+        _burn(msg.sender, boundShare);
         soul.transfer(msg.sender, soulShare);
         seance.transfer(msg.sender, seanceShare);
     }
 
+    function updateConstants(IERC20 _soul, IERC20 _seance) public onlyOwner {
+        soul = _soul;
+        seance = _seance;
 
+        emit NewConstants(_soul, _seance);
+    }
 
 }

@@ -142,7 +142,7 @@ contract SoulAura {
         summoner = ISummoner(0xce6ccbB1EdAD497B4d53d829DF491aF70065AB5B);
         DAO = 0x1C63C726926197BD3CB75d86bCFB1DaeBcD87250;
         
-        bound = IBound(0x409Ca67669DC604Eb36dba68d11de1a24F1EE5f9);
+        bound = IBound(0xFB582442c4D25f30a561a43b266deF94662dd556);
         
         soulFtm = ISoulSwapPair(0xa2527Af9DABf3E3B4979d7E0493b5e2C6e63dC57);
         
