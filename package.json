@@ -28,8 +28,8 @@
   "scripts": {
     "build": "hardhat compile",
     "console": "hardhat console",
-    "flat:bound": "truffle-flattener contracts/SoulBound.sol > contracts/flats/SoulBound_flat.sol",
-    "flat:aura": "truffle-flattener contracts/governance/VotingPower.sol > contracts/flats/VotingPower_flat.sol",
+    "flat:enchant": "truffle-flattener contracts/Enchantment.sol > contracts/flats/Enchantment_flat.sol",
+    "flat:aura": "truffle-flattener contracts/governance/SoulAura.sol > contracts/flats/SoulAura_flat.sol",
 
     "testnet:deploy": "yarn ropsten:deploy && yarn rinkeby:deploy && yarn goerli:deploy && yarn kovan:deploy && yarn moonbase:deploy && yarn arbitrum:deploy",
     "mainnet:deploy": "hardhat --network mainnet deploy",

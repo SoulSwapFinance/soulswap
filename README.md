@@ -23,5 +23,5 @@ https://github.com/SoulSwapFinance/contracts
 [MIT](LICENSE.txt)
 
 ## Deployed Address (Experimental)
-- Soul Bound: [`0xFB582442c4D25f30a561a43b266deF94662dd556`](https://ftmscan.com/address/0xFB582442c4D25f30a561a43b266deF94662dd556#code)
-- Soul Aura: [`0xc0D8EbC768DEFA7e452756C74D315C67cCa5C7c8`](https://ftmscan.com/address/0xc0D8EbC768DEFA7e452756C74D315C67cCa5C7c8#code)
+- Enchantment: [`0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a`](https://ftmscan.com/address/0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a#code)
+- Soul Aura: [`0x1D549636104Cc5cA79773E7D002AfE1FD5A03497`](https://ftmscan.com/address/0x1D549636104Cc5cA79773E7D002AfE1FD5A03497#code)

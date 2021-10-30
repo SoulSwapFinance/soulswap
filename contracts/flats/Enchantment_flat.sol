@@ -610,85 +610,82 @@ abstract contract Ownable is Context {
     }
 }
 
-// File: contracts/SoulBound.sol
-
+// File: contracts/Enchantment.sol
 pragma solidity ^0.8.7;
 
-// SoulBound is the neatest bound around. come in with some soul, and leave with some more! 
-// handles swapping to and from BOUND -- our protocol reward token.
+// enchantment allows you to ENCHANT your SEANCE at your will.
+// come in with some SEANCE, and leave with some more! 
+// handles swapping to and from ENCHANT -- our dex reward token.
 
-contract SoulBound is ERC20("SoulBound", "BOUND"), Ownable, ReentrancyGuard {
-    IERC20 public soul;
+contract Enchantment is ERC20("Enchantment", "ENCHANT"), Ownable, ReentrancyGuard {
     IERC20 public seance;
-    bool isInitialized; // stores whether contract has been initialized
-    event NewConstants(IERC20 _soul, IERC20 _seance);
+    
+    bool isInitialized;
+    
+    event Enchant(address indexed user, uint amount);
+    event Leave(address indexed user, uint share, uint amount);
+    event NewSeance(IERC20 seance);
 
-    // the soul token contract
-    function initialize(IERC20 _soul, IERC20 _seance) external onlyOwner {
+    // defines the SEANCE token contract.
+    constructor(IERC20 _seance) { seance = _seance; }
+
+    // initializes the contract to enable staking.
+    function initialize() external onlyOwner {
         require(!isInitialized, 'already started');
-        soul = _soul;
-        seance = _seance;
-
         isInitialized = true;
     }
 
-    function totalSeance() public view returns (uint) {
-        return seance.balanceOf(address(this));
-    }
-
-    function totalSoul() public view returns (uint) {
-        return soul.balanceOf(address(this));
-    }
-
-    // (total) soul + seance owed to stakers
-    function totalPayable() public view returns (uint) {
-        uint soulTotal = totalSoul();
-        uint seanceTotal = totalSeance();
-
-        return seanceTotal + soulTotal;
-    }
-
-    function mintableBound(uint _seanceStakable) internal view returns (uint) {
-        uint soulBound; // initiates soul bound
-
-        totalPayable() == 0 
-            ? soulBound = 1 // sets an bound power of 1
-            : soulBound = totalSupply() / totalPayable(); // sets weight for bound power
-
-        return _seanceStakable * soulBound; // sets bound to mint
-    }
-
-    // locks soul, mints bound at bound rate
-    function enter(uint seanceStakable) external nonReentrant {
+    // locks SEANCE, mints ENCHANT.
+    function enchant(uint amount) external nonReentrant {
         require(isInitialized, 'staking has not yet begun');
-        uint boundMintable = mintableBound(seanceStakable); // total bound to mine to sender
+
+        // gets the SEANCE locked in the contract.
+        uint totalSeance = seance.balanceOf(address(this));
+        // gets total ENCHANT in existence.
+        uint totalShares = totalSupply();
+
+        // if no ENCHANT exists, mint it 1:1 to the amount put in.
+        if (totalShares == 0 || totalSeance == 0) {
+            _mint(msg.sender, amount);
+        }
+
+        // calculate and mint the amount of ENCHANT the SEANCE is worth. 
+        // the ratio will change overtime, as ENCHANT is burned/minted and SEANCE
+        // deposited + gained from fees / withdrawn.
         
-        seance.transferFrom(msg.sender, address(this), seanceStakable); // transfers seance from sender
-        _mint(msg.sender, boundMintable); // mints bound to sender
+        else {
+            uint mintable = amount * totalShares / totalSeance;
+            _mint(msg.sender, mintable);
+            }
+
+        // transfers the SEANCE to the contract.
+        seance.transferFrom(msg.sender, address(this), amount);
+
+        emit Enchant(msg.sender, amount);
+
     }
 
-    // leaves the bound. reclaims soul.
-    // unlocks soul rewards + staked seance | burns bound
-    function leave(uint boundShare) external nonReentrant {
+    // leaves the ENCHANT. reclaims SEANCE.
+    // unlocks staked + gained SEANCE | burns ENCHANT.
+    function leave(uint share) external nonReentrant {
+        // gets the amount of ENCHANT in existence.
+        uint totalShares = totalSupply();
 
-        // exchange rates
-        uint soulRate = totalSoul() / totalSupply(); // soul per bound (exchange rate)
-        uint seanceRate = totalSeance() / totalSupply(); // seance per bound (exchange rate)
+        // calculates the amount of SEANCE the ENCHANT is worth.
+        uint amount = share * seance.balanceOf(address(this)) / totalShares;
 
-        // payable component shares
-        uint soulShare = boundShare * soulRate; // exchanges bound for soul (at soul rate)
-        uint seanceShare = boundShare * seanceRate; // exchanges bound for seance (at soul rate)
+        // burns the ENCHANT amount from the sender.
+        _burn(msg.sender, share);
 
-        _burn(msg.sender, boundShare);
-        soul.transfer(msg.sender, soulShare);
-        seance.transfer(msg.sender, seanceShare);
+        // sends the SEANCE to the sender.
+        seance.transfer(msg.sender, amount);
+
+        emit Leave(msg.sender, share, amount);
     }
 
-    function updateConstants(IERC20 _soul, IERC20 _seance) public onlyOwner {
-        soul = _soul;
+    function updateSeance(IERC20 _seance) public onlyOwner {
         seance = _seance;
 
-        emit NewConstants(_soul, _seance);
+        emit NewSeance(_seance);
     }
-
 }
