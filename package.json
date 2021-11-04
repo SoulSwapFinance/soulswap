@@ -30,6 +30,7 @@
     "console": "hardhat console",
     "flat:enchant": "truffle-flattener contracts/Enchantment.sol > contracts/flats/Enchantment_flat.sol",
     "flat:aura": "truffle-flattener contracts/governance/SoulAura.sol > contracts/flats/SoulAura_flat.sol",
+    "flat:enchantress": "truffle-flattener contracts/Enchantress.sol > contracts/flats/Enchantress_flat.sol",
 
     "testnet:deploy": "yarn ropsten:deploy && yarn rinkeby:deploy && yarn goerli:deploy && yarn kovan:deploy && yarn moonbase:deploy && yarn arbitrum:deploy",
     "mainnet:deploy": "hardhat --network mainnet deploy",
