@@ -221,7 +221,7 @@ contract Circles is Ownable {
         IERC20Ext _Token, 
         uint _startTime, 
         uint _endTime, 
-        address _DAO) external {
+        address _DAO) external onlyOwner {
 
         checkForToken(_Token); // ensure you cannot add duplicate pools
 
