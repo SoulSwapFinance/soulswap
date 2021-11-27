@@ -17,4 +17,7 @@
   "solidity-va.deco.statevars": true,
   "solidity-va.preview.markdown": true,
   "solidity.defaultCompiler": "remote",
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity"
+  },
 }
