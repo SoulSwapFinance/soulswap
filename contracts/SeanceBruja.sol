@@ -1,8 +1,12 @@
-// File: contracts/libraries/SafeMath.sol
-
 // SPDX-License-Identifier: MIT
 
-// a library for performing overflow-safe math, updated with awesomeness from of DappHub (https://github.com/dapphub/ds-math)
+// File: contracts/libraries/SafeMath.sol
+
+// a library for performing overflow-safe math, updated with awesomeness 
+// from DappHub (https://github.com/dapphub/ds-math)
+
+pragma solidity ^0.8.7;
+
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
         require((c = a + b) >= b, "SafeMath: Add Overflow");
@@ -22,7 +26,7 @@ library SafeMath {
     }
 
     function to128(uint256 a) internal pure returns (uint128 c) {
-        require(a <= uint128(-1), "SafeMath: uint128 Overflow");
+        require(a <= type(uint128).max, "SafeMath: uint128 Overflow");
         c = uint128(a);
     }
 }
@@ -71,9 +75,6 @@ interface IERC20 {
 }
 
 // File: contracts/libraries/SafeERC20.sol
-
-pragma solidity 0.6.12;
-
 
 library SafeERC20 {
     function safeSymbol(IERC20 token) internal view returns (string memory) {
@@ -126,17 +127,10 @@ library SafeERC20 {
     }
 }
 
-// File: contracts/traderjoe/interfaces/IJoeERC20.sol
+// File: contracts/soulswap/interfaces/ISoulSwapERC20.sol
 
-
-pragma solidity >=0.5.0;
-
-interface IJoeERC20 {
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+interface ISoulSwapERC20 {
+    event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint256 value);
 
     function name() external pure returns (string memory);
@@ -149,10 +143,7 @@ interface IJoeERC20 {
 
     function balanceOf(address owner) external view returns (uint256);
 
-    function allowance(address owner, address spender)
-        external
-        view
-        returns (uint256);
+    function allowance(address owner, address spender) external view returns (uint256);
 
     function approve(address spender, uint256 value) external returns (bool);
 
@@ -181,178 +172,101 @@ interface IJoeERC20 {
     ) external;
 }
 
-// File: contracts/traderjoe/interfaces/IJoePair.sol
+// File: contracts/soulswap/interfaces/ISoulSwapPair.sol
 
-
-pragma solidity >=0.5.0;
-
-interface IJoePair {
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
-    event Transfer(address indexed from, address indexed to, uint256 value);
+interface ISoulSwapPair {
+    event Approval(address indexed owner, address indexed spender, uint value);
+    event Transfer(address indexed from, address indexed to, uint value);
 
     function name() external pure returns (string memory);
-
     function symbol() external pure returns (string memory);
-
     function decimals() external pure returns (uint8);
+    function totalSupply() external view returns (uint);
+    function balanceOf(address owner) external view returns (uint);
+    function allowance(address owner, address spender) external view returns (uint);
 
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address owner) external view returns (uint256);
-
-    function allowance(address owner, address spender)
-        external
-        view
-        returns (uint256);
-
-    function approve(address spender, uint256 value) external returns (bool);
-
-    function transfer(address to, uint256 value) external returns (bool);
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool);
+    function approve(address spender, uint value) external returns (bool);
+    function transfer(address to, uint value) external returns (bool);
+    function transferFrom(address from, address to, uint value) external returns (bool);
 
     function DOMAIN_SEPARATOR() external view returns (bytes32);
-
     function PERMIT_TYPEHASH() external pure returns (bytes32);
+    function nonces(address owner) external view returns (uint);
 
-    function nonces(address owner) external view returns (uint256);
+    function permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s) external;
 
-    function permit(
-        address owner,
-        address spender,
-        uint256 value,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external;
-
-    event Mint(address indexed sender, uint256 amount0, uint256 amount1);
-    event Burn(
-        address indexed sender,
-        uint256 amount0,
-        uint256 amount1,
-        address indexed to
-    );
+    event Mint(address indexed sender, uint amount0, uint amount1);
+    event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);
     event Swap(
         address indexed sender,
-        uint256 amount0In,
-        uint256 amount1In,
-        uint256 amount0Out,
-        uint256 amount1Out,
+        uint amount0In,
+        uint amount1In,
+        uint amount0Out,
+        uint amount1Out,
         address indexed to
     );
     event Sync(uint112 reserve0, uint112 reserve1);
 
-    function MINIMUM_LIQUIDITY() external pure returns (uint256);
-
+    function MINIMUM_LIQUIDITY() external pure returns (uint);
     function factory() external view returns (address);
-
     function token0() external view returns (address);
-
     function token1() external view returns (address);
+    function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+    function price0CumulativeLast() external view returns (uint);
+    function price1CumulativeLast() external view returns (uint);
+    function kLast() external view returns (uint);
 
-    function getReserves()
-        external
-        view
-        returns (
-            uint112 reserve0,
-            uint112 reserve1,
-            uint32 blockTimestampLast
-        );
-
-    function price0CumulativeLast() external view returns (uint256);
-
-    function price1CumulativeLast() external view returns (uint256);
-
-    function kLast() external view returns (uint256);
-
-    function mint(address to) external returns (uint256 liquidity);
-
-    function burn(address to)
-        external
-        returns (uint256 amount0, uint256 amount1);
-
-    function swap(
-        uint256 amount0Out,
-        uint256 amount1Out,
-        address to,
-        bytes calldata data
-    ) external;
-
+    function mint(address to) external returns (uint liquidity);
+    function burn(address to) external returns (uint amount0, uint amount1);
+    function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external;
     function skim(address to) external;
-
     function sync() external;
 
     function initialize(address, address) external;
 }
 
-// File: contracts/traderjoe/interfaces/IJoeFactory.sol
+// File: contracts/soulswap/interfaces/ISoulSwapFactory.sol
 
+interface ISoulSwapFactory {
+    event PairCreated(address indexed token0, address indexed token1, address pair, uint);
+    event SetFeeTo(address indexed user, address indexed _feeTo);
+    event SetMigrator(address indexed user, address indexed _migrator);
+    event FeeToSetter(address indexed user, address indexed _feeToSetter);
 
-pragma solidity >=0.5.0;
+    function feeTo() external view returns (address _feeTo);
+    function feeToSetter() external view returns (address _feeToSetter);
+    function migrator() external view returns (address _migrator);
 
-interface IJoeFactory {
-    event PairCreated(
-        address indexed token0,
-        address indexed token1,
-        address pair,
-        uint256
-    );
-
-    function feeTo() external view returns (address);
-
-    function feeToSetter() external view returns (address);
-
-    function migrator() external view returns (address);
-
-    function getPair(address tokenA, address tokenB)
-        external
-        view
-        returns (address pair);
+    function getPair(address tokenA, address tokenB) external view returns (address pair);
 
     function allPairs(uint256) external view returns (address pair);
+    function totalPairs() external view returns (uint256);
 
-    function allPairsLength() external view returns (uint256);
-
-    function createPair(address tokenA, address tokenB)
-        external
-        returns (address pair);
-
-    function setFeeTo(address) external;
-
-    function setFeeToSetter(address) external;
-
+    function createPair(address tokenA, address tokenB) external returns (address pair);
     function setMigrator(address) external;
+    function setFeeTo(address) external;
+    function setFeeToSetter(address) external;
 }
 
-// File: contracts/boringcrypto/BoringOwnable.sol
+// File: contracts/possessedcrypto/PossessedOwnable.sol
 
 // Audit on 5-Jan-2021 by Keno and BoringCrypto
 // Source: OZ Ownable + Claimable.sol
-// Edited by BoringCrypto
+// Edited by Buns
 
-contract BoringOwnableData {
+contract PossessedOwnableData {
     address public owner;
     address public pendingOwner;
 }
 
-contract BoringOwnable is BoringOwnableData {
+contract PossessedOwnable is PossessedOwnableData {
     event OwnershipTransferred(
         address indexed previousOwner,
         address indexed newOwner
     );
 
     /// @notice `owner` defaults to msg.sender on construction.
-    constructor() public {
+    constructor() {
         owner = msg.sender;
         emit OwnershipTransferred(address(0), msg.sender);
     }
@@ -408,32 +322,30 @@ contract BoringOwnable is BoringOwnableData {
     }
 }
 
-// File: contracts/JoeMaker.sol
-
+// File: contracts/SeanceBruja.sol
 
 // P1 - P3: OK
-pragma solidity 0.6.12;
 
-// JoeMaker is MasterJoe's left hand and kinda a wizard. He can cook up Joe from pretty much anything!
-// This contract handles "serving up" rewards for xJoe holders by trading tokens collected from fees for Joe.
+// SeanceBruja is SoulSummoner's left hand and kinda a bruja. She can conjure up Seance from pretty much anything!
+// This contract handles casting rewards for ENCHANT holders by trading tokens collected from fees for SoulSwap.
 
 // T1 - T4: OK
-contract JoeMaker is BoringOwnable {
+contract SeanceBruja is PossessedOwnable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     // V1 - V5: OK
-    IJoeFactory public immutable factory;
-    //0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac
+    ISoulSwapFactory public immutable factory;
+    //
     // V1 - V5: OK
-    address public immutable bar;
-    //0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272
+    address public immutable enchantment;
+    //
     // V1 - V5: OK
-    address private immutable joe;
-    //0x6B3595068778DD592e39A122f4f5a5cF09C90fE2
+    address private immutable seance;
+    //
     // V1 - V5: OK
-    address private immutable wavax;
-    //0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    address private immutable wftm;
+    //
 
     // V1 - V5: OK
     mapping(address => address) internal _bridges;
@@ -447,19 +359,19 @@ contract JoeMaker is BoringOwnable {
         address indexed token1,
         uint256 amount0,
         uint256 amount1,
-        uint256 amountJOE
+        uint256 amountSEANCE
     );
 
     constructor(
         address _factory,
-        address _bar,
-        address _joe,
-        address _wavax
-    ) public {
-        factory = IJoeFactory(_factory);
-        bar = _bar;
-        joe = _joe;
-        wavax = _wavax;
+        address _enchantment,
+        address _seance,
+        address _wftm
+    ) {
+        factory = ISoulSwapFactory(_factory);
+        enchantment = _enchantment;
+        seance = _seance;
+        wftm = _wftm;
     }
 
     // F1 - F10: OK
@@ -467,7 +379,7 @@ contract JoeMaker is BoringOwnable {
     function bridgeFor(address token) public view returns (address bridge) {
         bridge = _bridges[token];
         if (bridge == address(0)) {
-            bridge = wavax;
+            bridge = wftm;
         }
     }
 
@@ -476,8 +388,8 @@ contract JoeMaker is BoringOwnable {
     function setBridge(address token, address bridge) external onlyOwner {
         // Checks
         require(
-            token != joe && token != wavax && token != bridge,
-            "JoeMaker: Invalid bridge"
+            token != seance && token != wftm && token != bridge,
+            "SeanceBruja: Invalid bridge"
         );
 
         // Effects
@@ -490,15 +402,15 @@ contract JoeMaker is BoringOwnable {
     // C6: It's not a fool proof solution, but it prevents flash loans, so here it's ok to use tx.origin
     modifier onlyEOA() {
         // Try to make flash-loan exploit harder to do by only allowing externally owned addresses.
-        require(msg.sender == tx.origin, "JoeMaker: must use EOA");
+        require(msg.sender == tx.origin, "SeanceBruja: must use EOA");
         _;
     }
 
     // F1 - F10: OK
     // F3: _convert is separate to save gas by only checking the 'onlyEOA' modifier once in case of convertMultiple
-    // F6: There is an exploit to add lots of JOE to the bar, run convert, then remove the JOE again.
-    //     As the size of the JoeBar has grown, this requires large amounts of funds and isn't super profitable anymore
-    //     The onlyEOA modifier prevents this being done with a flash loan.
+    // F6: There is an exploit to add lots of SEANCE to the enchantment, run convert, then remove the SEANCE again.
+    // As the size of the Enchantment has grown, this requires large amounts of funds and isn't super profitable anymore
+    // The onlyEOA modifier prevents this being done with a flash loan.
     // C1 - C24: OK
     function convert(address token0, address token1) external onlyEOA() {
         _convert(token0, token1);
@@ -523,8 +435,8 @@ contract JoeMaker is BoringOwnable {
     function _convert(address token0, address token1) internal {
         // Interactions
         // S1 - S4: OK
-        IJoePair pair = IJoePair(factory.getPair(token0, token1));
-        require(address(pair) != address(0), "JoeMaker: Invalid pair");
+        ISoulSwapPair pair = ISoulSwapPair(factory.getPair(token0, token1));
+        require(address(pair) != address(0), "SeanceBruja: Invalid pair");
         // balanceOf: S1 - S4: OK
         // transfer: X1 - X5: OK
         IERC20(address(pair)).safeTransfer(
@@ -548,53 +460,53 @@ contract JoeMaker is BoringOwnable {
 
     // F1 - F10: OK
     // C1 - C24: OK
-    // All safeTransfer, _swap, _toJOE, _convertStep: X1 - X5: OK
+    // All safeTransfer, _swap, _toSEANCE, _convertStep: X1 - X5: OK
     function _convertStep(
         address token0,
         address token1,
         uint256 amount0,
         uint256 amount1
-    ) internal returns (uint256 joeOut) {
+    ) internal returns (uint256 seanceOut) {
         // Interactions
         if (token0 == token1) {
             uint256 amount = amount0.add(amount1);
-            if (token0 == joe) {
-                IERC20(joe).safeTransfer(bar, amount);
-                joeOut = amount;
-            } else if (token0 == wavax) {
-                joeOut = _toJOE(wavax, amount);
+            if (token0 == seance) {
+                IERC20(seance).safeTransfer(enchantment, amount);
+                seanceOut = amount;
+            } else if (token0 == wftm) {
+                seanceOut = _toSEANCE(wftm, amount);
             } else {
                 address bridge = bridgeFor(token0);
                 amount = _swap(token0, bridge, amount, address(this));
-                joeOut = _convertStep(bridge, bridge, amount, 0);
+                seanceOut = _convertStep(bridge, bridge, amount, 0);
             }
-        } else if (token0 == joe) {
-            // eg. JOE - AVAX
-            IERC20(joe).safeTransfer(bar, amount0);
-            joeOut = _toJOE(token1, amount1).add(amount0);
-        } else if (token1 == joe) {
-            // eg. USDT - JOE
-            IERC20(joe).safeTransfer(bar, amount1);
-            joeOut = _toJOE(token0, amount0).add(amount1);
-        } else if (token0 == wavax) {
-            // eg. AVAX - USDC
-            joeOut = _toJOE(
-                wavax,
-                _swap(token1, wavax, amount1, address(this)).add(amount0)
+        } else if (token0 == seance) {
+            // eg. SEANCE - FTM
+            IERC20(seance).safeTransfer(enchantment, amount0);
+            seanceOut = _toSEANCE(token1, amount1).add(amount0);
+        } else if (token1 == seance) {
+            // eg. fUSDT - SEANCE
+            IERC20(seance).safeTransfer(enchantment, amount1);
+            seanceOut = _toSEANCE(token0, amount0).add(amount1);
+        } else if (token0 == wftm) {
+            // eg. FTM - USDC
+            seanceOut = _toSEANCE(
+                wftm,
+                _swap(token1, wftm, amount1, address(this)).add(amount0)
             );
-        } else if (token1 == wavax) {
-            // eg. USDT - AVAX
-            joeOut = _toJOE(
-                wavax,
-                _swap(token0, wavax, amount0, address(this)).add(amount1)
+        } else if (token1 == wftm) {
+            // eg. fUSDT - FTM
+            seanceOut = _toSEANCE(
+                wftm,
+                _swap(token0, wftm, amount0, address(this)).add(amount1)
             );
         } else {
-            // eg. MIC - USDT
+            // eg. MIC - fUSDT
             address bridge0 = bridgeFor(token0);
             address bridge1 = bridgeFor(token1);
             if (bridge0 == token1) {
-                // eg. MIC - USDT - and bridgeFor(MIC) = USDT
-                joeOut = _convertStep(
+                // eg. MIC - fUSDT - and bridgeFor(MIC) = fUSDT
+                seanceOut = _convertStep(
                     bridge0,
                     token1,
                     _swap(token0, bridge0, amount0, address(this)),
@@ -602,16 +514,16 @@ contract JoeMaker is BoringOwnable {
                 );
             } else if (bridge1 == token0) {
                 // eg. WBTC - DSD - and bridgeFor(DSD) = WBTC
-                joeOut = _convertStep(
+                seanceOut = _convertStep(
                     token0,
                     bridge1,
                     amount0,
                     _swap(token1, bridge1, amount1, address(this))
                 );
             } else {
-                joeOut = _convertStep(
+                seanceOut = _convertStep(
                     bridge0,
-                    bridge1, // eg. USDT - DSD - and bridgeFor(DSD) = WBTC
+                    bridge1, // eg. fUSDT - DSD - and bridgeFor(DSD) = WBTC
                     _swap(token0, bridge0, amount0, address(this)),
                     _swap(token1, bridge1, amount1, address(this))
                 );
@@ -630,8 +542,8 @@ contract JoeMaker is BoringOwnable {
     ) internal returns (uint256 amountOut) {
         // Checks
         // X1 - X5: OK
-        IJoePair pair = IJoePair(factory.getPair(fromToken, toToken));
-        require(address(pair) != address(0), "JoeMaker: Cannot convert");
+        ISoulSwapPair pair = ISoulSwapPair(factory.getPair(fromToken, toToken));
+        require(address(pair) != address(0), "SeanceBruja: Cannot convert");
 
         // Interactions
         // X1 - X5: OK
@@ -656,11 +568,11 @@ contract JoeMaker is BoringOwnable {
 
     // F1 - F10: OK
     // C1 - C24: OK
-    function _toJOE(address token, uint256 amountIn)
+    function _toSEANCE(address token, uint256 amountIn)
         internal
         returns (uint256 amountOut)
     {
         // X1 - X5: OK
-        amountOut = _swap(token, joe, amountIn, bar);
+        amountOut = _swap(token, seance, amountIn, enchantment);
     }
 }
