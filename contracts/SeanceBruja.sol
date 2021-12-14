@@ -336,16 +336,16 @@ contract SeanceBruja is PossessedOwnable {
 
     // V1 - V5: OK
     ISoulSwapFactory public immutable factory;
-    //
+    // 0x1120e150dA9def6Fe930f4fEDeD18ef57c0CA7eF
     // V1 - V5: OK
     address public immutable enchantment;
-    //
+    // 0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a
     // V1 - V5: OK
     address private immutable seance;
-    //
+    // 0x124B06C5ce47De7A6e9EFDA71a946717130079E6
     // V1 - V5: OK
     address private immutable wftm;
-    //
+    // 0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83
 
     // V1 - V5: OK
     mapping(address => address) internal _bridges;

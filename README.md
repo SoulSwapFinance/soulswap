@@ -24,7 +24,7 @@ https://github.com/SoulSwapFinance/contracts
 
 ## Deployed Addresses (Experimental)
 - Enchantment: [`0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a`](https://ftmscan.com/address/0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a#code)
-- Soul Aura: [`0x1D549636104Cc5cA79773E7D002AfE1FD5A03497`](https://ftmscan.com/address/0x1D549636104Cc5cA79773E7D002AfE1FD5A03497#code)
+- Soul Aura: [`0xb5c12f6DebAeEDE2107839D932E9a0d435AE5A4f`](https://ftmscan.com/address/0xb5c12f6DebAeEDE2107839D932E9a0d435AE5A4f#code)
 - Circles: [`0xe4e36B11BC4B040608e5923d083d3E0dE2a8DECb`](https://ftmscan.com/address/0xe4e36B11BC4B040608e5923d083d3E0dE2a8DECb#code)
 - ZapIn: [`0x05aD4ED86A7C9365E2145dE61c58E0478ae9892c`](https://ftmscan.com/address/0x05aD4ED86A7C9365E2145dE61c58E0478ae9892c#code)
 - SpellBook: [`0x400FDECC6eFa3298C17851B8DBd467e530270189`](https://ftmscan.com/address/0x400FDECC6eFa3298C17851B8DBd467e530270189#code)
