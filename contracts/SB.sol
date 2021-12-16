@@ -978,9 +978,7 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
         uint amount;           // total tokens user has provided.
         uint rewardDebt;       // reward debt (see below).
         uint rewardDebtAtTime; // the last time user deposited.
-        uint lastWithdrawTime; // the last time a user withdrew at.
         uint firstDepositTime; // the last time a user deposited at.
-        uint timeDelta;        // time passed since withdrawals.
         uint lastDepositTime;  // most recent deposit time.
 
         //   pending reward = (user.amount * pool.accSoulPerShare) - user.rewardDebt
@@ -1059,7 +1057,7 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
     }
 
     event Deposit(address indexed user, uint indexed pid, uint amount);
-    event Withdraw(address indexed user, uint indexed pid, uint amount, uint timeStamp);
+    event Bonded(address indexed user, uint indexed pid, uint amount, uint timeStamp);
 
     event Initialized(address team, address dao, address soul, address seance, uint totalAllocPoint, uint weight);
     event PoolAdded(uint pid, uint allocPoint, IERC20 lpToken, uint totalAllocPoint);
@@ -1249,35 +1247,28 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
         emit Deposit(msg.sender, pid, amount);
     }
 
-    // withdraw: lp tokens (external farmers)
-    function withdraw(uint pid, uint amount) external nonReentrant validatePoolByPid(pid) {
+    // bond: lp tokens (external farmers)
+    function bond(uint pid) external nonReentrant validatePoolByPid(pid) {
         Pools storage pool = poolInfo[pid];
         Users storage user = userInfo[pid][msg.sender];
+        uint amountStaked = user.amount;
 
-        require(user.amount >= amount, 'withdraw not good');
+        require(amountStaked != 0, 'must have a bonded amount');
         updatePool(pid);
 
         uint pending = user.amount * pool.accSoulPerShare / 1e12 - user.rewardDebt;
 
         if(pending > 0) { safeSoulTransfer(msg.sender, pending); }
 
-        if(amount > 0) {
-            if(user.lastDepositTime > 0){
-				user.timeDelta = block.timestamp - user.lastDepositTime; }
-			else { user.timeDelta = block.timestamp - user.firstDepositTime; }
-            
-            user.amount = user.amount - amount;
-            
-        }
-        
+        user.amount = user.amount - amountStaked; // remove all
+    
         isBondMode == true ?
-              pool.lpToken.transfer(address(dao), amount)           // sends LP to DAO [true]
-            : pool.lpToken.transfer(address(msg.sender), amount);   // sends LP to USER [false]
+              pool.lpToken.transfer(address(dao), amountStaked)           // sends LP to DAO [true]
+            : pool.lpToken.transfer(address(msg.sender), amountStaked);   // sends LP to USER [false]
 
-        user.rewardDebt = user.amount * pool.accSoulPerShare / 1e12;
-        user.lastWithdrawTime = block.timestamp;
+        user.rewardDebt = user.amount * pool.accSoulPerShare / 1e12;      // updates reward debt to 0
 
-        emit Withdraw(msg.sender, pid, amount, block.timestamp);
+        emit Bonded(msg.sender, pid, amountStaked, block.timestamp);
     }
     
     // transfer: seance (internal)
