@@ -215,43 +215,6 @@ abstract contract Ownable is Context {
     }
 }
 
-// File: @openzeppelin/contracts/security/Pausable.sol
-
-abstract contract Pausable is Context {
-
-    event Paused(address account);
-    event Unpaused(address account);
-    bool private _paused;
-
-    constructor() {
-        _paused = false;
-    }
-
-    function paused() public view virtual returns (bool) {
-        return _paused;
-    }
-
-    modifier whenNotPaused() {
-        require(!paused(), "Pausable: paused");
-        _;
-    }
-
-    modifier whenPaused() {
-        require(paused(), "Pausable: not paused");
-        _;
-    }
-
-    function _pause() internal virtual whenNotPaused {
-        _paused = true;
-        emit Paused(_msgSender());
-    }
-
-    function _unpause() internal virtual whenPaused {
-        _paused = false;
-        emit Unpaused(_msgSender());
-    }
-}
-
 // File: @openzeppelin/contracts/security/ReentrancyGuard.sol
 
 abstract contract ReentrancyGuard {
@@ -971,14 +934,13 @@ contract SeanceCircle is ERC20('SeanceCircle', 'SEANCE'), Ownable, Operable {
 // the bonder of souls | ownership transferred to a governance smart contract 
 // upon sufficient distribution + the community's desire to self-govern.
 
-contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
+contract SoulBond is AccessControl, ReentrancyGuard {
 
     // user info
     struct Users {
         uint amount;           // total tokens user has provided.
         uint rewardDebt;       // reward debt (see below).
-        uint rewardDebtAtTime; // the last time user deposited.
-        uint firstDepositTime; // the last time a user deposited at.
+        uint depositTime; // the last time a user deposited at.
         uint lastDepositTime;  // most recent deposit time.
 
         //   pending reward = (user.amount * pool.accSoulPerShare) - user.rewardDebt
@@ -1219,6 +1181,7 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
         
         soul.mint(team, divi);
         soul.mint(dao, divi);
+
         soul.mint(address(seance), soulReward); // note: updated calc
 
         pool.accSoulPerShare = pool.accSoulPerShare + (soulReward * 1e12 / lpSupply);
@@ -1226,23 +1189,22 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
     }
 
     // deposit: lp tokens (lp owner)
-    function deposit(uint pid, uint amount) external nonReentrant validatePoolByPid(pid) whenNotPaused {
+    function deposit(uint pid, uint amount) external nonReentrant validatePoolByPid(pid) {
         Pools storage pool = poolInfo[pid];
         Users storage user = userInfo[pid][msg.sender];
+        require(amount > 0, 'must deposit more than 0');
+        require(user.amount == 0, 'must bond first');
+        
         updatePool(pid);
 
-        if (amount > 0) { // if adding more
-            pool.lpToken.transferFrom(address(msg.sender), address(this), amount);
-            user.amount += amount;
-        }
+        // transfer lpToken to the summoner
+        pool.lpToken.transferFrom(address(msg.sender), address(this), amount);
+        user.amount += amount;
 
         user.rewardDebt = user.amount * pool.accSoulPerShare / 1e12;
 
-        // marks timestamp for first deposit
-        user.firstDepositTime = 
-            user.firstDepositTime > 0 
-                ? user.firstDepositTime
-                : block.timestamp;
+        // marks deposit time
+        user.depositTime = block.timestamp;
 
         emit Deposit(msg.sender, pid, amount);
     }
