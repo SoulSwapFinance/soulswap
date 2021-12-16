@@ -1229,8 +1229,6 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
 
     // deposit: lp tokens (lp owner)
     function deposit(uint pid, uint amount) external nonReentrant validatePoolByPid(pid) whenNotPaused {
-        require (pid != 0, 'deposit SOUL by staking');
-
         Pools storage pool = poolInfo[pid];
         Users storage user = userInfo[pid][msg.sender];
         updatePool(pid);
