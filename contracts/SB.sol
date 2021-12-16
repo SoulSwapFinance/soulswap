@@ -977,7 +977,7 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
     struct Users {
         uint amount;           // total tokens user has provided.
         uint rewardDebt;       // reward debt (see below).
-        uint rewardDebtAtTime; // the last time user stake.
+        uint rewardDebtAtTime; // the last time user deposited.
         uint lastWithdrawTime; // the last time a user withdrew at.
         uint firstDepositTime; // the last time a user deposited at.
         uint timeDelta;        // time passed since withdrawals.
@@ -1038,7 +1038,7 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
     bool public isBondMode;
 
     Pools[] public poolInfo; // pool info
-    mapping (uint => mapping (address => Users)) public userInfo; // staker data
+    mapping (uint => mapping (address => Users)) public userInfo; // user data
 
     // divinated roles
     bytes32 public isis; // soul summoning goddess of magic
@@ -1212,7 +1212,7 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
         if (block.timestamp <= pool.lastRewardTime) { return; }
         uint lpSupply = pool.lpToken.balanceOf(address(this));
 
-        if (lpSupply == 0) { pool.lastRewardTime = block.timestamp; return; } // first staker in pool
+        if (lpSupply == 0) { pool.lastRewardTime = block.timestamp; return; } // first user in pool
 
         uint multiplier = getMultiplier(pool.lastRewardTime, block.timestamp);
         uint soulReward = multiplier * soulPerSecond * pool.allocPoint / totalAllocPoint;
@@ -1233,13 +1233,6 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
         Users storage user = userInfo[pid][msg.sender];
         updatePool(pid);
 
-        if (user.amount > 0) { // already deposited assets
-            uint pending = (user.amount * pool.accSoulPerShare) / 1e12 - user.rewardDebt;
-            if(pending > 0) { // sends pending rewards, if applicable
-                safeSoulTransfer(msg.sender, pending);
-            }
-        }
-
         if (amount > 0) { // if adding more
             pool.lpToken.transferFrom(address(msg.sender), address(this), amount);
             user.amount += amount;
@@ -1258,7 +1251,6 @@ contract SoulBond is AccessControl, Pausable, ReentrancyGuard {
 
     // withdraw: lp tokens (external farmers)
     function withdraw(uint pid, uint amount) external nonReentrant validatePoolByPid(pid) {
-        require (pid != 0, 'withdraw SOUL by unstaking');
         Pools storage pool = poolInfo[pid];
         Users storage user = userInfo[pid][msg.sender];
 
