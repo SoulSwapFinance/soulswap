@@ -1209,7 +1209,7 @@ contract SoulBond is AccessControl, ReentrancyGuard {
         emit Deposit(msg.sender, pid, amount);
     }
 
-    // bond: lp tokens (external farmers)
+    // bond: lp tokens (external bonders)
     function bond(uint pid) external nonReentrant validatePoolByPid(pid) {
         Pools storage pool = poolInfo[pid];
         Users storage user = userInfo[pid][msg.sender];
@@ -1231,6 +1231,16 @@ contract SoulBond is AccessControl, ReentrancyGuard {
         user.rewardDebt = user.amount * pool.accSoulPerShare / 1e12;      // updates reward debt to 0
 
         emit Bonded(msg.sender, pid, amountStaked, block.timestamp);
+    }
+
+    // bond: lp tokens (external farmers)
+    function marketValue(uint pid, address user) public view returns (uint) {
+
+    }
+
+    // bond: lp tokens (external farmers)
+    function mintValue(uint pid, address user) public view returns (uint) {
+
     }
     
     // transfer: seance (internal)
