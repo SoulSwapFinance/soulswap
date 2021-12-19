@@ -25,6 +25,7 @@ https://github.com/SoulSwapFinance/contracts
 ## Deployed Addresses (Experimental)
 - Enchantment: [`0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a`](https://ftmscan.com/address/0x6a1a8368D607c7a808F7BbA4F7aEd1D9EbDE147a#code)
 - InstantPrice: [`0xB74bC153Be3A5a5898AaC15B3d0cFfa26234be4b`](https://ftmscan.com/address/0xB74bC153Be3A5a5898AaC15B3d0cFfa26234be4b#code)
+- PriceFetcher: [`0xba5da8aC172a9f014D42837EE1B678C4Ca96fB0E`](https://ftmscan.com/address/0xba5da8aC172a9f014D42837EE1B678C4Ca96fB0E#code)
 - Soul Bond: [`0xEdaECfc744F3BDeAF6556AEEbfcDedd79437a01F`](https://ftmscan.com/address/0xEdaECfc744F3BDeAF6556AEEbfcDedd79437a01F#code)
 - Bond Helper: [`0x8226D02356eC72Bcb61A19c3c67f3e053Ae5758e`](https://ftmscan.com/address/0x8226D02356eC72Bcb61A19c3c67f3e053Ae5758e#code)
 - Soul Aura: [`0xb5c12f6DebAeEDE2107839D932E9a0d435AE5A4f`](https://ftmscan.com/address/0xb5c12f6DebAeEDE2107839D932E9a0d435AE5A4f#code)
