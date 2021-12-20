@@ -257,20 +257,13 @@ function usdcValue(uint pid, address lpAddress) public view returns (uint dollar
     }
 }
 
-//   function reserveValue(uint pid) public view returns (uint) {
-//     // address lpAddress = getAddress(pid);
-//     address token0 = ISoulSwapPair(lpAddress).token0();
-//     address token1 = ISoulSwapPair(lpAddress).token1();
-    
-//     return
-//     token0 == WFTM_ADDRESS || token1 == WFTM_ADDRESS 
-//         ? lpAddress.balanceOf(WFTM_ADDRESS) * 2
-//         : token0 == USDC_ADDRESS ? currentTokenPrice(lpAddress, token1)
-//         : token1 == USDC_ADDRESS ? currentTokenPrice(lpAddress, token0) : 0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83;
-        
-//     // currentTokenPrice()
-//     // ftmPrice = currentTokenPrice(USDC_MARKET, WFTM_ADDRESS); // FTM PRICE
-//   }
+// USDC price of the LP
+function usdcPrice(uint pid, address lpAddress) public view returns (uint dollarValue) {
+    uint value = usdcValue(pid, lpAddress);
+    uint ttlSupply = IToken(USDC_ADDRESS).totalSupply();
+
+    return value / ttlSupply;
+}
 
   function contractUsdTokensSum(address _contract, address[] memory _tokens) public view returns (uint256) {
     uint256[] memory balances = getContractTokensBalanceOfArray(_contract, _tokens);
