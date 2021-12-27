@@ -1,3 +1,7 @@
+/**
+ *Submitted for verification at FtmScan.com on 2021-12-26
+*/
+
 // SPDX-License-Identifier: MIT
 
 // File: contracts/interfaces/IPair.sol
@@ -211,7 +215,7 @@ abstract contract Ownable is Context {
 // File: contracts/governance/SoulAura.sol
 pragma solidity ^0.8.7;
 
-contract SoulAuraV2 is Ownable {
+contract SoulAuraV3 is Ownable {
 
     ISummoner summoner = ISummoner(0xce6ccbB1EdAD497B4d53d829DF491aF70065AB5B);
     IERC20 soul = IERC20(0xe2fb177009FF39F52C0134E8007FA0e4BaAcBd07);
@@ -266,8 +270,9 @@ contract SoulAuraV2 is Ownable {
     function balanceOf(address member) public view returns (uint) {
         ( uint memberLiquidity, ) = pooledPower(member);
         ( uint memberSoul, ) = soulPower(member);
+        ( uint memberSeance, ) = seancePower(member);
 
-        return memberLiquidity + memberSoul;
+        return memberLiquidity + memberSoul + memberSeance;
     }
 
     // gets: member's pooled power

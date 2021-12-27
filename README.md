@@ -28,7 +28,7 @@ https://github.com/SoulSwapFinance/contracts
 - PriceFetcher: [`0x51445B73852952128bFCAE65fdd889881D8d87Bd`](https://ftmscan.com/address/0x51445B73852952128bFCAE65fdd889881D8d87Bd#code)
 - Soul Bond: [`0xEdaECfc744F3BDeAF6556AEEbfcDedd79437a01F`](https://ftmscan.com/address/0xEdaECfc744F3BDeAF6556AEEbfcDedd79437a01F#code)
 - Bond Helper: [`0x8226D02356eC72Bcb61A19c3c67f3e053Ae5758e`](https://ftmscan.com/address/0x8226D02356eC72Bcb61A19c3c67f3e053Ae5758e#code)
-- Soul Aura: [`0xb086A17F18f6ca515dd9C92A1E23Ec2104248a58`](https://ftmscan.com/address/0xb086A17F18f6ca515dd9C92A1E23Ec2104248a58#code)
+- Soul Aura: [`0x5b014e247c517Be62D622D44b912280B0b60ac73`](https://ftmscan.com/address/0x5b014e247c517Be62D622D44b912280B0b60ac73#code)
 - Circles: [`0xe4e36B11BC4B040608e5923d083d3E0dE2a8DECb`](https://ftmscan.com/address/0xe4e36B11BC4B040608e5923d083d3E0dE2a8DECb#code)
 - ZapIn: [`0x05aD4ED86A7C9365E2145dE61c58E0478ae9892c`](https://ftmscan.com/address/0x05aD4ED86A7C9365E2145dE61c58E0478ae9892c#code)
 - SpellBook: [`0x400FDECC6eFa3298C17851B8DBd467e530270189`](https://ftmscan.com/address/0x400FDECC6eFa3298C17851B8DBd467e530270189#code)
