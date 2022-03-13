@@ -34,5 +34,6 @@ https://github.com/SoulSwapFinance/contracts
 - SpellBook: [`0x400FDECC6eFa3298C17851B8DBd467e530270189`](https://ftmscan.com/address/0x400FDECC6eFa3298C17851B8DBd467e530270189#code)
 - PossessedHelper: [`0x29Aa92832d1D71CDFA0E3A1A23c9515232Ec557E`](https://ftmscan.com/address/0x29Aa92832d1D71CDFA0E3A1A23c9515232Ec557E#code)
 - SeanceBruja: [`0xBaBAa972979579d1ebf2718F8954fa9c98c7b607`](https://ftmscan.com/address/0xBaBAa972979579d1ebf2718F8954fa9c98c7b607#code)
+- SoulSwapHandler: [`0x2ae9b6523FE6b483cB51b1F722755706e5367CE4`](https://ftmscan.com/address/0x2ae9b6523FE6b483cB51b1F722755706e5367CE4#code)
 
 - DevWallet: [`0x4c83082834f076851a124cC29ac085426bfa869a`](https://ftmscan.com/address/0x4c83082834f076851a124cC29ac085426bfa869a#code)
