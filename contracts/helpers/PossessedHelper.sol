@@ -21,7 +21,6 @@ interface IERC20 {
 
 interface ISoulSummoner {
     function migrator() external view returns (address);
-    function owner() external view returns (address);
     function startTime() external view returns (uint);
     function soul() external view returns (address);
     function soulPerSecond() external view returns (uint);
